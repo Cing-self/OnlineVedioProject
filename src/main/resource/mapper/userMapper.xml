@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Welcome to use the TableGo Tools.
+    
+    http://www.tablego.cn
+    
+    http://vipbooks.iteye.com
+    http://blog.csdn.net/vipbooks
+    http://www.cnblogs.com/vipbooks
+    
+    Author: bianj
+    Email: tablego@qq.com
+    Version: 6.8.0
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- user -->
+<mapper namespace="com.cjh.onlinevedio.dao.UserDao">
+    <!-- 字段映射 -->
+    <resultMap id="userMap" type="User">
+        <result column="u_id" property="uId" jdbcType="INTEGER" />
+        <result column="u_phone" property="uPhone" jdbcType="VARCHAR" />
+        <result column="u_name" property="uName" jdbcType="VARCHAR" />
+        <result column="u_password" property="uPassword" jdbcType="VARCHAR" />
+        <result column="u_email" property="uEmail" jdbcType="VARCHAR" />
+        <result column="u_vip" property="uVip" jdbcType="VARCHAR" />
+        <result column="u_createtime" property="uCreatetime" jdbcType="TIMESTAMP" />
+        <result column="u_flag" property="uFlag" javaType="INT"/>
+    </resultMap>
+    
+    <!-- 表查询字段 -->
+    <sql id="allColumns">
+        u_id, u_phone, u_name, u_password, u_email, u_vip, u_createtime, u_flag
+    </sql>
+    
+    <!-- 查询所有数据 -->
+    <select id="findUserAll" resultMap="userMap">
+        SELECT
+        <include refid="allColumns" />
+        FROM user WHERE u_flag = 1
+    </select>
+    
+    <!-- 根据条件参数查询数据列表 -->
+    <select id="findUserByCondition" resultMap="userMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM user WHERE 1 = 1
+        <if test="uId != null">
+            AND u_id = #{uId}
+        </if>
+        <if test="uPhone != null and uPhone != ''">
+            AND u_phone = #{uPhone}
+        </if>
+        <if test="uName != null and uName != ''">
+            AND u_name = #{uName}
+        </if>
+        <if test="uPassword != null and uPassword != ''">
+            AND u_password = #{uPassword}
+        </if>
+        <if test="uEmail != null and uEmail != ''">
+            AND u_email = #{uEmail}
+        </if>
+        <if test="uVip != null">
+            AND u_vip = #{uVip}
+        </if>
+        <if test="uCreatetime != null">
+            AND u_createtime = #{uCreatetime}
+        </if>
+        <if test="uFlag != null">
+            AND u_flag = #{uFlag}
+        </if>
+    </select>
+    
+    <!-- 根据主键查询多个数据 -->
+    <select id="findUserByIds" resultMap="userMap" parameterType="list">
+        SELECT
+        <include refid="allColumns" />
+        FROM user WHERE u_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{uId}
+        </foreach>
+    </select>
+
+    <!--  根据主键查询单条数据  -->
+    <select id="findUserById" resultMap="userMap">
+        SELECT
+        <include refid="allColumns"/>
+        FROM user WHERE u_id = #{uId}
+    </select>
+    
+    <!-- 插入数据 -->
+    <insert id="insertUser" parameterType="com.cjh.onlinevedio.domain.User">
+        INSERT INTO user (
+            u_id, u_phone, u_name, u_password, u_email, u_vip, u_createtime
+        ) VALUES (
+            #{uId},
+            #{uPhone},
+            #{uName},
+            #{uPassword},
+            #{uEmail},
+            #{uVip},
+            #{uCreatetime}
+        )
+    </insert>
+
+    <update id="updateUser" parameterType="com.cjh.onlinevedio.domain.User">
+        UPDATE user
+        <set>
+            <if test="uId != null">
+                u_id = #{uId},
+            </if>
+            <if test="uPhone != null">
+                u_phone = #{uPhone},
+            </if>
+            <if test="uName != null">
+                u_name = #{uName},
+            </if>
+            <if test="uPassword != null">
+                u_password = #{uPassword},
+            </if>
+            <if test="uEmail != null">
+                u_email = #{uEmail},
+            </if>
+            <if test="uVip != null">
+                u_vip = #{uVip},
+            </if>
+            <if test="uCreatetime != null">
+                u_createtime = #{uCreatetime}
+            </if>
+            <if test="uFlag != null">
+                u_flag = #{uFlag}
+            </if>
+        </set>
+        WHERE u_id = #{uId}
+    </update>
+    <!-- 修改数据 -->
+    <update id="updateUserByMap" parameterType="map">
+        UPDATE user
+        <set>
+            <if test="uId != null">
+                u_id = #{uId},
+            </if>
+            <if test="uPhone != null">
+                u_phone = #{uPhone},
+            </if>
+            <if test="uName != null">
+                u_name = #{uName},
+            </if>
+            <if test="uPassword != null">
+                u_password = #{uPassword},
+            </if>
+            <if test="uEmail != null">
+                u_email = #{uEmail},
+            </if>
+            <if test="uVip != null">
+                u_vip = #{uVip},
+            </if>
+            <if test="uCreatetime != null">
+                u_createtime = #{uCreatetime}
+            </if>
+            <if test="uFlag != null">
+                u_flag = #{uFlag}
+            </if>
+        </set>
+        WHERE u_id = #{uId}
+    </update>
+    
+    <!-- 批量修改数据 -->
+    <update id="updateUsers" parameterType="list">
+        <foreach collection="list" index="index" item="item" separator=";">
+            UPDATE user
+            <set>
+                <if test="item.uId != null">
+                    u_id = #{item.uId},
+                </if>
+                <if test="item.uPhone != null">
+                    u_phone = #{item.uPhone},
+                </if>
+                <if test="item.uName != null">
+                    u_name = #{item.uName},
+                </if>
+                <if test="item.uPassword != null">
+                    u_password = #{item.uPassword},
+                </if>
+                <if test="item.uEmail != null">
+                    u_email = #{item.uEmail},
+                </if>
+                <if test="item.uVip != null">
+                    u_vip = #{item.uVip},
+                </if>
+                <if test="item.uCreatetime != null">
+                    u_createtime = #{item.uCreatetime}
+                </if>
+                <if test="item.uFlag != null">
+                    u_flag = #{item.uFlag}
+                </if>
+            </set>
+            WHERE u_id = #{item.uId}
+        </foreach>
+    </update>
+
+    <!-- 根据主键删除数据 -->
+    <delete id="deleteUserById" parameterType="Integer">
+        DELETE FROM user WHERE u_id = #{uId}
+    </delete>
+    
+    <!-- 根据主键批量删除数据 -->
+    <delete id="deleteUserByIds" parameterType="list">
+        DELETE FROM user WHERE u_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{uId}
+        </foreach>
+    </delete>
+</mapper>

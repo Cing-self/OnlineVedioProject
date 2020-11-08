@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Welcome to use the TableGo Tools.
+    
+    http://www.tablego.cn
+    
+    http://vipbooks.iteye.com
+    http://blog.csdn.net/vipbooks
+    http://www.cnblogs.com/vipbooks
+    
+    Author: bianj
+    Email: tablego@qq.com
+    Version: 6.8.0
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- tool -->
+<mapper namespace="com.cjh.onlinevedio.dao.ToolDao">
+    <!-- 字段映射 -->
+    <resultMap id="toolMap" type="Tool">
+        <result column="t_id" property="tId" jdbcType="INTEGER" />
+        <result column="t_name" property="tName" jdbcType="VARCHAR" />
+        <result column="t_url" property="tUrl" jdbcType="VARCHAR" />
+        <result column="t_img_url" property="tImgUrl" jdbcType="VARCHAR" />
+        <result column="tt_id" property="ttId" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <!-- 表查询字段 -->
+    <sql id="allColumns">
+        t_id, t_name, t_url, t_img_url, tt_id
+    </sql>
+    
+    <!-- 查询所有数据 -->
+    <select id="findToolAll" resultMap="toolMap">
+        SELECT
+        <include refid="allColumns" />
+        FROM tool
+    </select>
+    
+    <!-- 根据条件参数查询数据列表 -->
+    <select id="findToolByCondition" resultMap="toolMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM tool WHERE 1 = 1
+        <if test="tId != null">
+            AND t_id = #{tId}
+        </if>
+        <if test="tName != null and tName != ''">
+            AND t_name LIKE CONCAT('%', #{tName}, '%')
+        </if>
+        <if test="tUrl != null and tUrl != ''">
+            AND t_url LIKE CONCAT('%', #{tUrl}, '%')
+        </if>
+        <if test="tImgUrl != null and tImgUrl != ''">
+            AND t_img_url LIKE CONCAT('%', #{tImgUrl}, '%')
+        </if>
+        <if test="ttId != null">
+            AND tt_id = #{ttId}
+        </if>
+    </select>
+    
+    <!-- 根据主键查询数据 -->
+    <select id="findToolByIds" resultMap="toolMap" parameterType="list">
+        SELECT
+        <include refid="allColumns" />
+        FROM tool WHERE t_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{tId}
+        </foreach>
+    </select>
+    
+    <!-- 插入数据 -->
+    <insert id="insertTool" parameterType="com.cjh.onlinevedio.domain.Tool">
+        INSERT INTO tool (
+            t_id, t_name, t_url, t_img_url, tt_id
+        ) VALUES (
+            #{tId},
+            #{tName},
+            #{tUrl},
+            #{tImgUrl},
+            #{ttId}
+        )
+    </insert>
+    
+    <!-- 修改数据 -->
+    <update id="updateTool" parameterType="map">
+        UPDATE tool
+        <set>
+            <if test="tId != null">
+                t_id = #{tId},
+            </if>
+            <if test="tName != null">
+                t_name = #{tName},
+            </if>
+            <if test="tUrl != null">
+                t_url = #{tUrl},
+            </if>
+            <if test="tImgUrl != null">
+                t_img_url = #{tImgUrl},
+            </if>
+            <if test="ttId != null">
+                tt_id = #{ttId}
+            </if>
+        </set>
+        WHERE t_id = #{tId}
+    </update>
+    
+    <!-- 批量修改数据 -->
+    <update id="updateTools" parameterType="list">
+        <foreach collection="list" index="index" item="item" separator=";">
+            UPDATE tool
+            <set>
+                <if test="item.tId != null">
+                    t_id = #{item.tId},
+                </if>
+                <if test="item.tName != null">
+                    t_name = #{item.tName},
+                </if>
+                <if test="item.tUrl != null">
+                    t_url = #{item.tUrl},
+                </if>
+                <if test="item.tImgUrl != null">
+                    t_img_url = #{item.tImgUrl},
+                </if>
+                <if test="item.ttId != null">
+                    tt_id = #{item.ttId}
+                </if>
+            </set>
+            WHERE t_id = #{item.tId}
+        </foreach>
+    </update>
+    
+    <!-- 根据主键删除数据 -->
+    <delete id="deleteToolById" parameterType="Integer">
+        DELETE FROM tool WHERE t_id = #{tId}
+    </delete>
+    
+    <!-- 根据主键批量删除数据 -->
+    <delete id="deleteToolByIds" parameterType="list">
+        DELETE FROM tool WHERE t_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{tId}
+        </foreach>
+    </delete>
+</mapper>

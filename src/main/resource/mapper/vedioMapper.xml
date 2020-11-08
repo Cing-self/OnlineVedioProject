@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Welcome to use the TableGo Tools.
+    
+    http://www.tablego.cn
+    
+    http://vipbooks.iteye.com
+    http://blog.csdn.net/vipbooks
+    http://www.cnblogs.com/vipbooks
+    
+    Author: bianj
+    Email: tablego@qq.com
+    Version: 6.8.0
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- vedio -->
+<mapper namespace="com.cjh.onlinevedio.dao.VedioDao">
+    <!-- 字段映射 -->
+    <resultMap id="vedioMap" type="Vedio">
+        <result column="v_id" property="vId" jdbcType="INTEGER" />
+        <result column="v_name" property="vName" jdbcType="VARCHAR" />
+        <result column="v_free_view" property="vFreeView" jdbcType="VARCHAR" />
+        <result column="c_id" property="cId" jdbcType="INTEGER" />
+        <result column="v_flag" property="vFlag" jdbcType="VARCHAR" />
+        <result column="v_url1" property="vUrl1" jdbcType="VARCHAR" />
+        <result column="v_url2" property="vUrl2" jdbcType="VARCHAR" />
+        <result column="v_createtime" property="vCreatetime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <!-- 表查询字段 -->
+    <sql id="allColumns">
+        v_id, v_name, v_free_view, c_id, v_flag, v_url1, v_url2, v_createtime
+    </sql>
+    
+    <!-- 查询所有数据 -->
+    <select id="findVedioAll" resultMap="vedioMap">
+        SELECT
+        <include refid="allColumns" />
+        FROM vedio
+    </select>
+    
+    <!-- 根据条件参数查询数据列表 -->
+    <select id="findVedioByCondition" resultMap="vedioMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM vedio WHERE 1 = 1
+        <if test="vId != null">
+            AND v_id = #{vId}
+        </if>
+        <if test="vName != null and vName != ''">
+            AND v_name LIKE CONCAT('%', #{vName}, '%')
+        </if>
+        <if test="vFreeView != null">
+            AND v_free_view = #{vFreeView}
+        </if>
+        <if test="cId != null">
+            AND c_id = #{cId}
+        </if>
+        <if test="vFlag != null">
+            AND v_flag = #{vFlag}
+        </if>
+        <if test="vUrl1 != null and vUrl1 != ''">
+            AND v_url1 LIKE CONCAT('%', #{vUrl1}, '%')
+        </if>
+        <if test="vUrl2 != null and vUrl2 != ''">
+            AND v_url2 LIKE CONCAT('%', #{vUrl2}, '%')
+        </if>
+        <if test="vCreatetime != null">
+            AND v_createtime = #{vCreatetime}
+        </if>
+    </select>
+    
+    <!-- 根据主键查询数据 -->
+    <select id="findVedioByIds" resultMap="vedioMap" parameterType="list">
+        SELECT
+        <include refid="allColumns" />
+        FROM vedio WHERE v_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{vId}
+        </foreach>
+    </select>
+    
+    <!-- 插入数据 -->
+    <insert id="insertVedio" parameterType="com.cjh.onlinevedio.domain.Vedio">
+        INSERT INTO vedio (
+            v_id, v_name, v_free_view, c_id, v_flag, v_url1, v_url2, v_createtime
+        ) VALUES (
+            #{vId},
+            #{vName},
+            #{vFreeView},
+            #{cId},
+            #{vFlag},
+            #{vUrl1},
+            #{vUrl2},
+            #{vCreatetime}
+        )
+    </insert>
+    
+    <!-- 修改数据 -->
+    <update id="updateVedio" parameterType="map">
+        UPDATE vedio
+        <set>
+            <if test="vId != null">
+                v_id = #{vId},
+            </if>
+            <if test="vName != null">
+                v_name = #{vName},
+            </if>
+            <if test="vFreeView != null">
+                v_free_view = #{vFreeView},
+            </if>
+            <if test="cId != null">
+                c_id = #{cId},
+            </if>
+            <if test="vFlag != null">
+                v_flag = #{vFlag},
+            </if>
+            <if test="vUrl1 != null">
+                v_url1 = #{vUrl1},
+            </if>
+            <if test="vUrl2 != null">
+                v_url2 = #{vUrl2},
+            </if>
+            <if test="vCreatetime != null">
+                v_createtime = #{vCreatetime}
+            </if>
+        </set>
+        WHERE v_id = #{vId}
+    </update>
+    
+    <!-- 批量修改数据 -->
+    <update id="updateVedios" parameterType="list">
+        <foreach collection="list" index="index" item="item" separator=";">
+            UPDATE vedio
+            <set>
+                <if test="item.vId != null">
+                    v_id = #{item.vId},
+                </if>
+                <if test="item.vName != null">
+                    v_name = #{item.vName},
+                </if>
+                <if test="item.vFreeView != null">
+                    v_free_view = #{item.vFreeView},
+                </if>
+                <if test="item.cId != null">
+                    c_id = #{item.cId},
+                </if>
+                <if test="item.vFlag != null">
+                    v_flag = #{item.vFlag},
+                </if>
+                <if test="item.vUrl1 != null">
+                    v_url1 = #{item.vUrl1},
+                </if>
+                <if test="item.vUrl2 != null">
+                    v_url2 = #{item.vUrl2},
+                </if>
+                <if test="item.vCreatetime != null">
+                    v_createtime = #{item.vCreatetime}
+                </if>
+            </set>
+            WHERE v_id = #{item.vId}
+        </foreach>
+    </update>
+    
+    <!-- 根据主键删除数据 -->
+    <delete id="deleteVedioById" parameterType="Integer">
+        DELETE FROM vedio WHERE v_id = #{vId}
+    </delete>
+    
+    <!-- 根据主键批量删除数据 -->
+    <delete id="deleteVedioByIds" parameterType="list">
+        DELETE FROM vedio WHERE v_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{vId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Welcome to use the TableGo Tools.
+    
+    http://www.tablego.cn
+    
+    http://vipbooks.iteye.com
+    http://blog.csdn.net/vipbooks
+    http://www.cnblogs.com/vipbooks
+    
+    Author: bianj
+    Email: tablego@qq.com
+    Version: 6.8.0
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- banner -->
+<mapper namespace="com.cjh.onlinevedio.dao.BannerDao">
+    <!-- 字段映射 -->
+    <resultMap id="bannerMap" type="com.cjh.onlinevedio.domain.Banner">
+        <result column="b_id" property="bId" jdbcType="INTEGER" />
+        <result column="b_img_url" property="bImgUrl" jdbcType="VARCHAR" />
+        <result column="b_flag" property="bFlag" jdbcType="VARCHAR" />
+        <result column="b_type" property="bType" jdbcType="VARCHAR" />
+        <result column="b_target_url" property="bTargetUrl" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <!-- 表查询字段 -->
+    <sql id="allColumns">
+        b_id, b_img_url, b_flag, b_type, b_target_url
+    </sql>
+    
+    <!-- 查询所有数据 -->
+    <select id="findBannerAll" resultMap="bannerMap">
+        SELECT
+        <include refid="allColumns" />
+        FROM banner
+    </select>
+    
+    <!-- 根据条件参数查询数据列表 -->
+    <select id="findBannerByCondition" resultMap="bannerMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM banner WHERE 1 = 1
+        <if test="bId != null">
+            AND b_id = #{bId}
+        </if>
+        <if test="bImgUrl != null and bImgUrl != ''">
+            AND b_img_url LIKE CONCAT('%', #{bImgUrl}, '%')
+        </if>
+        <if test="bFlag != null">
+            AND b_flag = #{bFlag}
+        </if>
+        <if test="bType != null and bType != ''">
+            AND b_type LIKE CONCAT('%', #{bType}, '%')
+        </if>
+        <if test="bTargetUrl != null and bTargetUrl != ''">
+            AND b_target_url LIKE CONCAT('%', #{bTargetUrl}, '%')
+        </if>
+    </select>
+    
+    <!-- 根据主键查询数据 -->
+    <select id="findBannerByIds" resultMap="bannerMap" parameterType="list">
+        SELECT
+        <include refid="allColumns" />
+        FROM banner WHERE  IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{bId}
+        </foreach>
+    </select>
+    
+    <!-- 插入数据 -->
+    <insert id="insertBanner" parameterType="com.cjh.onlinevedio.domain.Banner">
+        INSERT INTO banner (
+            b_id, b_img_url, b_flag, b_type, b_target_url
+        ) VALUES (
+            #{bId},
+            #{bImgUrl},
+            #{bFlag},
+            #{bType},
+            #{bTargetUrl}
+        )
+    </insert>
+    
+    <!-- 修改数据 -->
+    <update id="updateBanner" parameterType="map">
+        UPDATE banner
+        <set>
+            <if test="bId != null">
+                b_id = #{bId},
+            </if>
+            <if test="bImgUrl != null">
+                b_img_url = #{bImgUrl},
+            </if>
+            <if test="bFlag != null">
+                b_flag = #{bFlag},
+            </if>
+            <if test="bType != null">
+                b_type = #{bType},
+            </if>
+            <if test="bTargetUrl != null">
+                b_target_url = #{bTargetUrl}
+            </if>
+        </set>
+        WHERE b_id = #{bId}
+    </update>
+    
+    <!-- 批量修改数据 -->
+    <update id="updateBanners" parameterType="list">
+        <foreach collection="list" index="index" item="item" separator=";">
+            UPDATE banner
+            <set>
+                <if test="item.bId != null">
+                    b_id = #{item.bId},
+                </if>
+                <if test="item.bImgUrl != null">
+                    b_img_url = #{item.bImgUrl},
+                </if>
+                <if test="item.bFlag != null">
+                    b_flag = #{item.bFlag},
+                </if>
+                <if test="item.bType != null">
+                    b_type = #{item.bType},
+                </if>
+                <if test="item.bTargetUrl != null">
+                    b_target_url = #{item.bTargetUrl}
+                </if>
+            </set>
+            WHERE b_id = #{item.bId}
+        </foreach>
+    </update>
+    
+    <!-- 根据主键删除数据 -->
+    <delete id="deleteBannerById" parameterType="Integer">
+        DELETE FROM banner WHERE b_id = #{bId}
+    </delete>
+    
+    <!-- 根据主键批量删除数据 -->
+    <delete id="deleteBannerByIds" parameterType="list">
+        DELETE FROM banner WHERE IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{bId}
+        </foreach>
+    </delete>
+</mapper>

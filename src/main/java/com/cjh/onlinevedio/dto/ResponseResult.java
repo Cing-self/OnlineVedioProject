@@ -1,0 +1,43 @@
+package com.cjh.onlinevedio.dto;
+
+/**
+ * 页面返回的数据类
+ */
+public class ResponseResult<T> {
+
+    private int rcode;
+    private T data;
+    private String message;
+
+    public ResponseResult() {
+    }
+
+    public ResponseResult(int rcode, String message) {
+        this.rcode = rcode;
+        this.message = message;
+    }
+
+    public int getRcode() {
+        return rcode;
+    }
+
+    public void setRcode(int rcode) {
+        this.rcode = rcode;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+}

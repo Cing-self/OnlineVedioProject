@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Welcome to use the TableGo Tools.
+    
+    http://www.tablego.cn
+    
+    http://vipbooks.iteye.com
+    http://blog.csdn.net/vipbooks
+    http://www.cnblogs.com/vipbooks
+    
+    Author: bianj
+    Email: tablego@qq.com
+    Version: 6.8.0
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- course -->
+<mapper namespace="com.cjh.onlinevedio.dao.CourseDao">
+    <!-- 字段映射 -->
+    <resultMap id="courseMap" type="Course">
+        <result column="c_id" property="cId" jdbcType="INTEGER" />
+        <result column="c_title" property="cTitle" jdbcType="VARCHAR" />
+        <result column="c_image_url" property="cImageUrl" jdbcType="VARCHAR" />
+        <result column="c_intro" property="cIntro" jdbcType="VARCHAR" />
+        <result column="c_intro_url" property="cIntroUrl" jdbcType="VARCHAR" />
+        <result column="c_views" property="cViews" jdbcType="INTEGER" />
+        <result column="c_flag" property="cFlag" jdbcType="VARCHAR" />
+        <result column="t_id" property="tId" jdbcType="INTEGER" />
+        <result column="c_vip" property="cVip" jdbcType="VARCHAR" />
+        <result column="c_ware_url" property="cWareUrl" jdbcType="VARCHAR" />
+        <result column="c_createtime" property="cCreatetime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <!-- 表查询字段 -->
+    <sql id="allColumns">
+        c_id, c_title, c_image_url, c_intro, c_intro_url, c_views, c_flag, t_id, 
+        c_vip, c_ware_url, c_createtime
+    </sql>
+    
+    <!-- 查询所有数据 -->
+    <select id="findCourseAll" resultMap="courseMap">
+        SELECT
+        <include refid="allColumns" />
+        FROM course
+    </select>
+    
+    <!-- 根据条件参数查询数据列表 -->
+    <select id="findCourseByCondition" resultMap="courseMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM course WHERE 1 = 1
+        <if test="cId != null">
+            AND c_id = #{cId}
+        </if>
+        <if test="cTitle != null and cTitle != ''">
+            AND c_title LIKE CONCAT('%', #{cTitle}, '%')
+        </if>
+        <if test="cImageUrl != null and cImageUrl != ''">
+            AND c_image_url LIKE CONCAT('%', #{cImageUrl}, '%')
+        </if>
+        <if test="cIntro != null and cIntro != ''">
+            AND c_intro LIKE CONCAT('%', #{cIntro}, '%')
+        </if>
+        <if test="cIntroUrl != null and cIntroUrl != ''">
+            AND c_intro_url LIKE CONCAT('%', #{cIntroUrl}, '%')
+        </if>
+        <if test="cViews != null">
+            AND c_views = #{cViews}
+        </if>
+        <if test="cFlag != null">
+            AND c_flag = #{cFlag}
+        </if>
+        <if test="tId != null">
+            AND t_id = #{tId}
+        </if>
+        <if test="cVip != null">
+            AND c_vip = #{cVip}
+        </if>
+        <if test="cWareUrl != null and cWareUrl != ''">
+            AND c_ware_url LIKE CONCAT('%', #{cWareUrl}, '%')
+        </if>
+        <if test="cCreatetime != null">
+            AND c_createtime = #{cCreatetime}
+        </if>
+    </select>
+
+    <!--   根据t_id查询数据-范围查询-按照创建创建时间降序 -->
+    <select id="findNewCourseByTidAndLimit" resultMap="courseMap" parameterType="map">
+        SELECT
+        <include refid="allColumns"/>
+        FROM course ORDER BY c_createtime
+        <if test="order == 1">
+            desc
+        </if>
+    </select>
+
+    <!-- 根据主键查询数据 -->
+    <select id="findCourseByIds" resultMap="courseMap" parameterType="list">
+        SELECT
+        <include refid="allColumns" />
+        FROM course WHERE c_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{cId}
+        </foreach>
+    </select>
+    
+    <!-- 插入数据 -->
+    <insert id="insertCourse" parameterType="com.cjh.onlinevedio.domain.Course">
+        INSERT INTO course (
+            c_id, c_title, c_image_url, c_intro, c_intro_url, c_views, c_flag, t_id, 
+            c_vip, c_ware_url, c_createtime
+        ) VALUES (
+            #{cId},
+            #{cTitle},
+            #{cImageUrl},
+            #{cIntro},
+            #{cIntroUrl},
+            #{cViews},
+            #{cFlag},
+            #{tId},
+            #{cVip},
+            #{cWareUrl},
+            #{cCreatetime}
+        )
+    </insert>
+    
+    <!-- 修改数据 -->
+    <update id="updateCourse" parameterType="map">
+        UPDATE course
+        <set>
+            <if test="cId != null">
+                c_id = #{cId},
+            </if>
+            <if test="cTitle != null">
+                c_title = #{cTitle},
+            </if>
+            <if test="cImageUrl != null">
+                c_image_url = #{cImageUrl},
+            </if>
+            <if test="cIntro != null">
+                c_intro = #{cIntro},
+            </if>
+            <if test="cIntroUrl != null">
+                c_intro_url = #{cIntroUrl},
+            </if>
+            <if test="cViews != null">
+                c_views = #{cViews},
+            </if>
+            <if test="cFlag != null">
+                c_flag = #{cFlag},
+            </if>
+            <if test="tId != null">
+                t_id = #{tId},
+            </if>
+            <if test="cVip != null">
+                c_vip = #{cVip},
+            </if>
+            <if test="cWareUrl != null">
+                c_ware_url = #{cWareUrl},
+            </if>
+            <if test="cCreatetime != null">
+                c_createtime = #{cCreatetime}
+            </if>
+        </set>
+        WHERE c_id = #{cId}
+    </update>
+    
+    <!-- 批量修改数据 -->
+    <update id="updateCourses" parameterType="list">
+        <foreach collection="list" index="index" item="item" separator=";">
+            UPDATE course
+            <set>
+                <if test="item.cId != null">
+                    c_id = #{item.cId},
+                </if>
+                <if test="item.cTitle != null">
+                    c_title = #{item.cTitle},
+                </if>
+                <if test="item.cImageUrl != null">
+                    c_image_url = #{item.cImageUrl},
+                </if>
+                <if test="item.cIntro != null">
+                    c_intro = #{item.cIntro},
+                </if>
+                <if test="item.cIntroUrl != null">
+                    c_intro_url = #{item.cIntroUrl},
+                </if>
+                <if test="item.cViews != null">
+                    c_views = #{item.cViews},
+                </if>
+                <if test="item.cFlag != null">
+                    c_flag = #{item.cFlag},
+                </if>
+                <if test="item.tId != null">
+                    t_id = #{item.tId},
+                </if>
+                <if test="item.cVip != null">
+                    c_vip = #{item.cVip},
+                </if>
+                <if test="item.cWareUrl != null">
+                    c_ware_url = #{item.cWareUrl},
+                </if>
+                <if test="item.cCreatetime != null">
+                    c_createtime = #{item.cCreatetime}
+                </if>
+            </set>
+            WHERE c_id = #{item.cId}
+        </foreach>
+    </update>
+    
+    <!-- 根据主键删除数据 -->
+    <delete id="deleteCourseById" parameterType="Integer">
+        DELETE FROM course WHERE c_id = #{cId}
+    </delete>
+    
+    <!-- 根据主键批量删除数据 -->
+    <delete id="deleteCourseByIds" parameterType="list">
+        DELETE FROM course WHERE  IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{cId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Welcome to use the TableGo Tools.
+    
+    http://www.tablego.cn
+    
+    http://vipbooks.iteye.com
+    http://blog.csdn.net/vipbooks
+    http://www.cnblogs.com/vipbooks
+    
+    Author: bianj
+    Email: tablego@qq.com
+    Version: 6.8.0
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- type -->
+<mapper namespace="com.cjh.onlinevedio.dao.TypeDao">
+    <!-- 字段映射 -->
+    <resultMap id="typeMap" type="Type">
+        <result column="t_id" property="tId" jdbcType="INTEGER" />
+        <result column="t_name" property="tName" jdbcType="VARCHAR" />
+        <result column="t_flag" property="tFlag" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <!-- 表查询字段 -->
+    <sql id="allColumns">
+        t_id, t_name, t_flag
+    </sql>
+    
+    <!-- 查询所有数据 -->
+    <select id="findTypeAll" resultMap="typeMap">
+        SELECT
+        <include refid="allColumns" />
+        FROM type
+    </select>
+    
+    <!-- 根据条件参数查询数据列表 -->
+    <select id="findTypeByCondition" resultMap="typeMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM type WHERE 1 = 1
+        <if test="tId != null">
+            AND t_id = #{tId}
+        </if>
+        <if test="tName != null and tName != ''">
+            AND t_name LIKE CONCAT('%', #{tName}, '%')
+        </if>
+        <if test="tFlag != null">
+            AND t_flag = #{tFlag}
+        </if>
+    </select>
+    
+    <!-- 根据主键查询数据 -->
+    <select id="findTypeByIds" resultMap="typeMap" parameterType="list">
+        SELECT
+        <include refid="allColumns" />
+        FROM type WHERE  IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{}
+        </foreach>
+    </select>
+    
+    <!-- 插入数据 -->
+    <insert id="insertType" parameterType="com.cjh.onlinevedio.domain.Type">
+        INSERT INTO type (
+            t_id, t_name, t_flag
+        ) VALUES (
+            #{tId},
+            #{tName},
+            #{tFlag}
+        )
+    </insert>
+    
+    <!-- 修改数据 -->
+    <update id="updateType" parameterType="map">
+        UPDATE type
+        <set>
+            <if test="tId != null">
+                t_id = #{tId},
+            </if>
+            <if test="tName != null">
+                t_name = #{tName},
+            </if>
+            <if test="tFlag != null">
+                t_flag = #{tFlag}
+            </if>
+        </set>
+        WHERE t_id = #{tId}
+    </update>
+    
+    <!-- 批量修改数据 -->
+    <update id="updateTypes" parameterType="list">
+        <foreach collection="list" index="index" item="item" separator=";">
+            UPDATE type
+            <set>
+                <if test="item.tId != null">
+                    t_id = #{item.tId},
+                </if>
+                <if test="item.tName != null">
+                    t_name = #{item.tName},
+                </if>
+                <if test="item.tFlag != null">
+                    t_flag = #{item.tFlag}
+                </if>
+            </set>
+            WHERE t_id = #{item.tId}
+        </foreach>
+    </update>
+    
+    <!-- 根据主键删除数据 -->
+    <delete id="deleteTypeById" parameterType="Integer">
+        DELETE FROM type WHERE t_id = #{tId}
+    </delete>
+    
+    <!-- 根据主键批量删除数据 -->
+    <delete id="deleteTypeByIds" parameterType="list">
+        DELETE FROM type WHERE t_id IN
+        <foreach collection="list" index="index" item="" open="(" separator="," close=")">
+            #{tId}
+        </foreach>
+    </delete>
+</mapper>
